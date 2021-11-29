@@ -5,17 +5,20 @@ const mongoose = require("mongoose");
 
 const auth = require("./middleware/auth");
 const isAdmin = require("./middleware/isAdmin");
+const isEditor = require("./middleware/isEditor");
+const log = require("./middleware/log");
 
 const user = require("./router/user");
 const dbrouter = require("./db/dbrouter");
 
-dotenv.config({ path: './.env' });
+dotenv.config({ path: "./.env" });
 const app = express();
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/user", user);
 app.use("/salaries", auth, isAdmin, dbrouter.salaries.getAll);
+app.use("/employees", auth, isEditor, log, dbrouter.employees.getAll);
 
 mongoose.connect(
   process.env.MONGODB_DATABASE,
