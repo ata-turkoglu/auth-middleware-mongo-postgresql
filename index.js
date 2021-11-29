@@ -3,17 +3,19 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 
-const user = require("./router/user")
+const auth = require("./middleware/auth");
+const isAdmin = require("./middleware/isAdmin");
 
-dotenv.config();
+const user = require("./router/user");
+const dbrouter = require("./db/dbrouter");
+
+dotenv.config({ path: './.env' });
 const app = express();
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
-
-
-app.use("/user",user)
-
+app.use("/user", user);
+app.use("/salaries", auth, isAdmin, dbrouter.salaries.getAll);
 
 mongoose.connect(
   process.env.MONGODB_DATABASE,
