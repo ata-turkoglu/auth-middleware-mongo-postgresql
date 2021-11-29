@@ -7,8 +7,10 @@ const auth = require("./middleware/auth");
 const isAdmin = require("./middleware/isAdmin");
 const isEditor = require("./middleware/isEditor");
 const log = require("./middleware/log");
+const authLog = require("./middleware/authLog");
 
 const user = require("./router/user");
+const logs = require("./router/logs");
 const dbrouter = require("./db/dbrouter");
 
 dotenv.config({ path: "./.env" });
@@ -19,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/user", user);
 app.use("/salaries", auth, isAdmin, dbrouter.salaries.getAll);
 app.use("/employees", auth, isEditor, log, dbrouter.employees.getAll);
+app.use("/logs", auth, authLog, log, logs);
 
 mongoose.connect(
   process.env.MONGODB_DATABASE,
